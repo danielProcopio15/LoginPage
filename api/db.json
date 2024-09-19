@@ -1,0 +1,16 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "usuario_especifico",
+        "budget": 1000000,
+        "demands": [
+          { "description": "Demanda 1", "amount": 10000 },
+          { "description": "Demanda 2", "amount": 20000 },
+          { "description": "Demanda 3", "amount": 15000 },
+          { "description": "Demanda 4", "amount": 30000 },
+          { "description": "Demanda 5", "amount": 50000 }
+        ]
+      }
+    ]
+  }
