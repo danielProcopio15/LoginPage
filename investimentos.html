@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            padding-left: 0;
+            padding: 0;
             margin: 0;
         }
         .sidebar {
@@ -39,18 +39,27 @@
         .navbar {
             padding: 10px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             background-color: transparent;
         }
         .navbar .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            margin-right: 10px;
         }
         .navbar a {
             text-decoration: none;
             color: black;
             font-size: 24px;
+        }
+        .orcamento-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         h1 {
             text-align: center;
@@ -58,35 +67,6 @@
         }
         .content {
             padding: 20px;
-            transition: margin-left 0.3s;
-        }
-        .shift-content {
-            margin-left: 250px;
-        }
-        .close-btn {
-            font-size: 18px;
-            padding: 10px;
-            cursor: pointer;
-            text-align: left;
-            color: #333;
-            border: none;
-            background: none;
-        }
-        .close-btn:hover {
-            background-color: #ddd;
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 1;
-        }
-        .show-overlay {
-            display: block;
         }
         .box {
             border: 1px solid #ccc;
@@ -95,126 +75,63 @@
             border-radius: 5px;
             background-color: #fff;
         }
-        .box h3 {
-            margin-bottom: 15px;
-        }
-        .note {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-        .note-content {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .note-content.show {
-            display: block;
-        }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <span class="menu-icon" onclick="toggleSidebar()">&#9776;</span>
         <a class="navbar-brand" href="#">Organiza</a>
+        <div class="orcamento-box">
+            Orçamento Atual: R$ <span id="orcamento-atual">0.00</span>
+        </div>
     </nav>
     <div class="sidebar" id="sidebar">
         <button class="close-btn" onclick="toggleSidebar()">Fechar &times;</button>
+        <a href="home.html">Página Principal</a>
         <a href="receitas-despesas.html">Gerenciar Finanças</a>
         <a href="investimentos.html">Investimentos</a>
         <a href="relatorios.html">Relatórios</a>
-    
+        <a href="orcamento.html">Orçamento</a>
     </div>
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
     <div class="content" id="main-content">
         <h1>Investimentos</h1>
         <div class="box">
             <h3>Adicionar Investimento</h3>
-            <form id="investmentForm">
+            <form id="investimentoForm">
                 <div class="mb-3">
-                    <label for="tipoInvestimento" class="form-label">Tipo de Investimento</label>
-                    <input type="text" class="form-control" id="tipoInvestimento" required>
-                </div>
-                <div class="mb-3">
-                    <label for="valorInvestimento" class="form-label">Valor</label>
-                    <input type="text" class="form-control" id="valorInvestimento" placeholder="1000,00" required>
-                </div>
-                <div class="mb-3">
-                    <label for="instituicao" class="form-label">Instituição</label>
-                    <input type="text" class="form-control" id="instituicao" required>
-                </div>
-                <div class="mb-3">
-                    <label for="categoriaInvestimento" class="form-label">Categoria</label>
-                    <select class="form-select" id="categoriaInvestimento">
-                        <option selected>Escolha uma categoria...</option>
-                        <option value="Ações">Ações</option>
-                        <option value="Fundo Imobiliário">Fundo Imobiliário</option>
-                        <option value="Renda Fixa">Renda Fixa</option>
-                        <option value="Criptoativos">Criptoativos</option>
-                        <option value="Outros">Outros</option>
-                    </select>
+                    <label for="valorInvestimento" class="form-label">Valor do Investimento</label>
+                    <input type="text" class="form-control" id="valorInvestimento" placeholder="Ex: 1000,00" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Adicionar Investimento</button>
             </form>
-        </div>
-        <div class="box">
-            <h3>Notas</h3>
-            <div id="investment-notes-container">
-                <!-- As notas serão adicionadas aqui -->
-            </div>
         </div>
     </div>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
             var overlay = document.getElementById("overlay");
-            var content = document.getElementById("main-content");
-            
             sidebar.classList.toggle("open-sidebar");
-            content.classList.toggle("shift-content");
             overlay.classList.toggle("show-overlay");
         }
 
-        function toggleNoteContent(noteId) {
-            var noteContent = document.getElementById(noteId);
-            noteContent.classList.toggle("show");
+        function atualizarOrcamento(valor) {
+            let orcamentoAtual = parseFloat(localStorage.getItem('orcamento')) || 0;
+            localStorage.setItem('orcamento', orcamentoAtual - valor);
+            document.getElementById('orcamento-atual').textContent = (orcamentoAtual - valor).toFixed(2);
         }
 
-        document.getElementById('investmentForm').addEventListener('submit', function(event) {
+        document.getElementById('investimentoForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            let valorInvestimento = parseFloat(document.getElementById('valorInvestimento').value.replace(',', '.'));
+            atualizarOrcamento(valorInvestimento);
+        });
 
-            const tipoInvestimento = document.getElementById('tipoInvestimento').value;
-            const valorInvestimento = document.getElementById('valorInvestimento').value;
-            const instituicao = document.getElementById('instituicao').value;
-            const categoriaInvestimento = document.getElementById('categoriaInvestimento').value;
-
-            const noteId = 'investment-note-' + new Date().getTime();
-
-            const noteElement = document.createElement('div');
-            noteElement.className = 'note';
-            noteElement.textContent = 'Categoria: ' + categoriaInvestimento;
-            noteElement.setAttribute('onclick', `toggleNoteContent('${noteId}')`);
-
-            const noteContentElement = document.createElement('div');
-            noteContentElement.id = noteId;
-            noteContentElement.className = 'note-content';
-            noteContentElement.innerHTML = `
-                <strong>Tipo de Investimento:</strong> ${tipoInvestimento}<br>
-                <strong>Valor:</strong> ${valorInvestimento}<br>
-                <strong>Instituição:</strong> ${instituicao}
-            `;
-
-            const notesContainer = document.getElementById('investment-notes-container');
-            notesContainer.appendChild(noteElement);
-            notesContainer.appendChild(noteContentElement);
-
-            document.getElementById('investmentForm').reset();
+        window.addEventListener('DOMContentLoaded', function () {
+            let orcamentoAtual = localStorage.getItem('orcamento');
+            if (orcamentoAtual) {
+                document.getElementById('orcamento-atual').textContent = parseFloat(orcamentoAtual).toFixed(2);
+            }
         });
     </script>
 </body>

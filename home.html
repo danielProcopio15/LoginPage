@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Organiza</title>
+    <title>Gerenciar Finanças - Organiza</title>
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            padding-left: 0;
+            padding: 0;
             margin: 0;
         }
         .sidebar {
             position: fixed;
             top: 0;
-            left: -250px; /* Menu inicialmente oculto */
+            left: -250px;
             height: 100%;
             width: 250px;
             background-color: #f8f9fa;
             padding-top: 20px;
             transition: 0.3s;
-            z-index: 2; /* Garante que o menu esteja acima da sobreposição */
+            z-index: 2;
         }
         .sidebar a {
             padding: 15px 10px;
@@ -34,18 +34,18 @@
             background-color: #ddd;
         }
         .open-sidebar {
-            left: 0; /* Exibe o menu quando clicado */
+            left: 0;
         }
         .navbar {
             padding: 10px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            background-color: transparent; /* Remove cor de fundo */
+            background-color: transparent;
         }
         .navbar .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            margin-right: 10px; /* Espaçamento entre o ícone e o nome "Organiza" */
         }
         .navbar a {
             text-decoration: none;
@@ -58,76 +58,90 @@
         }
         .content {
             padding: 20px;
-            transition: margin-left 0.3s;
         }
-        .shift-content {
-            margin-left: 250px; /* Empurra o conteúdo quando o menu estiver aberto */
-        }
-        /* Estilo para o botão de fechar dentro do menu */
-        .close-btn {
-            font-size: 18px;
+        .orcamento-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
             padding: 10px;
-            cursor: pointer;
-            text-align: left;
-            color: #333;
-            border: none;
-            background: none;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        .close-btn:hover {
-            background-color: #ddd;
-        }
-        /* Estilo para a sobreposição (overlay) */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro com opacidade */
-            display: none; /* Inicialmente oculto */
-            z-index: 1; /* Atrás do menu */
-        }
-        .show-overlay {
-            display: block; /* Exibe a sobreposição */
+        .box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #fff;
         }
     </style>
 </head>
 <body>
-    <!-- Barra de navegação com o ícone do menu e o nome Organiza -->
     <nav class="navbar">
-        <span class="menu-icon" onclick="toggleSidebar()">&#9776;</span> <!-- Ícone do menu (três tracinhos) -->
+        <span class="menu-icon" onclick="toggleSidebar()">&#9776;</span>
         <a class="navbar-brand" href="#">Organiza</a>
+        <div class="orcamento-box">
+            Orçamento Atual: R$ <span id="orcamento-atual">0.00</span>
+        </div>
     </nav>
-
-    <!-- Menu Sanduíche na Lateral -->
     <div class="sidebar" id="sidebar">
         <button class="close-btn" onclick="toggleSidebar()">Fechar &times;</button>
+        <a href="orcamento.html">Orçamento</a> <!-- Adicionado Orçamento aqui -->
         <a href="receitas-despesas.html">Gerenciar Finanças</a>
         <a href="investimentos.html">Investimentos</a>
         <a href="relatorios.html">Relatórios</a>
-        
+        <a href="orcamento.html">Orçamento</a>
+        <a href="home.html">Página principal</a>
     </div>
-
-    <!-- Sobreposição (overlay) que aparece quando o menu está aberto -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-    <!-- Conteúdo Principal da Home -->
     <div class="content" id="main-content">
-        <h1>Bem-vindo ao Organiza</h1>
-        <p style="text-align: center;">Use o menu na lateral para navegar nas opções de gerenciamento financeiro.</p>
+        <h1>Gerenciar Finanças</h1>
+        <div class="box">
+            <h3>Adicionar Receita</h3>
+            <form>
+                <div class="mb-3">
+                    <label for="valorReceita" class="form-label">Valor</label>
+                    <input type="text" class="form-control" id="valorReceita" placeholder="1000,00" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fonteReceita" class="form-label">Fonte</label>
+                    <input type="text" class="form-control" id="fonteReceita" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar Receita</button>
+            </form>
+        </div>
+        <div class="box">
+            <h3>Adicionar Despesa</h3>
+            <form>
+                <div class="mb-3">
+                    <label for="valorDespesa" class="form-label">Valor</label>
+                    <input type="text" class="form-control" id="valorDespesa" placeholder="500,00" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descricaoDespesa" class="form-label">Descrição</label>
+                    <input type="text" class="form-control" id="descricaoDespesa" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar Despesa</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Script para abrir/fechar o menu e controlar a sobreposição -->
     <script>
+        // Função para alternar a visibilidade da sidebar
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
-            var overlay = document.getElementById("overlay");
-            var content = document.getElementById("main-content");
-            
             sidebar.classList.toggle("open-sidebar");
-            content.classList.toggle("shift-content");
-            overlay.classList.toggle("show-overlay"); /* Exibe ou esconde a sobreposição */
         }
+
+        // Carregar orçamento atual
+        window.addEventListener('DOMContentLoaded', function () {
+            let orcamentoAtual = localStorage.getItem('orcamento');
+            if (orcamentoAtual) {
+                document.getElementById('orcamento-atual').textContent = parseFloat(orcamentoAtual).toFixed(2);
+            }
+        });
     </script>
 </body>
 </html>
+

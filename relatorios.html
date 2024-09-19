@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            padding-left: 0;
+            padding: 0;
             margin: 0;
         }
         .sidebar {
@@ -39,18 +39,27 @@
         .navbar {
             padding: 10px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             background-color: transparent;
         }
         .navbar .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            margin-right: 10px;
         }
         .navbar a {
             text-decoration: none;
             color: black;
             font-size: 24px;
+        }
+        .orcamento-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         h1 {
             text-align: center;
@@ -58,64 +67,6 @@
         }
         .content {
             padding: 20px;
-            transition: margin-left 0.3s;
-        }
-        .shift-content {
-            margin-left: 250px;
-        }
-        .close-btn {
-            font-size: 18px;
-            padding: 10px;
-            cursor: pointer;
-            text-align: left;
-            color: #333;
-            border: none;
-            background: none;
-        }
-        .close-btn:hover {
-            background-color: #ddd;
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 1;
-        }
-        .show-overlay {
-            display: block;
-        }
-        .box {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .box h3 {
-            margin-bottom: 15px;
-        }
-        .note {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-        .note-content {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .note-content.show {
-            display: block;
         }
     </style>
 </head>
@@ -123,91 +74,36 @@
     <nav class="navbar">
         <span class="menu-icon" onclick="toggleSidebar()">&#9776;</span>
         <a class="navbar-brand" href="#">Organiza</a>
+        <div class="orcamento-box">
+            Orçamento Atual: R$ <span id="orcamento-atual">0.00</span>
+        </div>
     </nav>
     <div class="sidebar" id="sidebar">
         <button class="close-btn" onclick="toggleSidebar()">Fechar &times;</button>
+        <a href="home.html">Página Principal</a>
         <a href="receitas-despesas.html">Gerenciar Finanças</a>
         <a href="investimentos.html">Investimentos</a>
         <a href="relatorios.html">Relatórios</a>
-        
+        <a href="orcamento.html">Orçamento</a>
     </div>
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
     <div class="content" id="main-content">
         <h1>Relatórios</h1>
-        <div class="box">
-            <h3>Adicionar Relatório</h3>
-            <form id="reportForm">
-                <div class="mb-3">
-                    <label for="titulo" class="form-label">Título</label>
-                    <input type="text" class="form-control" id="titulo" required>
-                </div>
-                <div class="mb-3">
-                    <label for="descricao" class="form-label">Descrição</label>
-                    <textarea class="form-control" id="descricao" rows="3" required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="categoriaRelatorio" class="form-label">Categoria</label>
-                    <select class="form-select" id="categoriaRelatorio">
-                        <option selected>Escolha uma categoria...</option>
-                        <option value="Financeiro">Financeiro</option>
-                        <option value="Planejamento">Planejamento</option>
-                        <option value="Análise">Análise</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Adicionar Relatório</button>
-            </form>
-        </div>
-        <div class="box">
-            <h3>Notas</h3>
-            <div id="report-notes-container">
-                <!-- As notas serão adicionadas aqui -->
-            </div>
-        </div>
+        <!-- Adicione aqui a lógica para exibir relatórios -->
     </div>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
             var overlay = document.getElementById("overlay");
-            var content = document.getElementById("main-content");
-            
             sidebar.classList.toggle("open-sidebar");
-            content.classList.toggle("shift-content");
             overlay.classList.toggle("show-overlay");
         }
 
-        function toggleNoteContent(noteId) {
-            var noteContent = document.getElementById(noteId);
-            noteContent.classList.toggle("show");
-        }
-
-        document.getElementById('reportForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const titulo = document.getElementById('titulo').value;
-            const descricao = document.getElementById('descricao').value;
-            const categoriaRelatorio = document.getElementById('categoriaRelatorio').value;
-
-            const noteId = 'report-note-' + new Date().getTime();
-
-            const noteElement = document.createElement('div');
-            noteElement.className = 'note';
-            noteElement.textContent = 'Categoria: ' + categoriaRelatorio;
-            noteElement.setAttribute('onclick', `toggleNoteContent('${noteId}')`);
-
-            const noteContentElement = document.createElement('div');
-            noteContentElement.id = noteId;
-            noteContentElement.className = 'note-content';
-            noteContentElement.innerHTML = `
-                <strong>Título:</strong> ${titulo}<br>
-                <strong>Descrição:</strong> ${descricao}
-            `;
-
-            const notesContainer = document.getElementById('report-notes-container');
-            notesContainer.appendChild(noteElement);
-            notesContainer.appendChild(noteContentElement);
-
-            document.getElementById('reportForm').reset();
+        window.addEventListener('DOMContentLoaded', function () {
+            let orcamentoAtual = localStorage.getItem('orcamento');
+            if (orcamentoAtual) {
+                document.getElementById('orcamento-atual').textContent = parseFloat(orcamentoAtual).toFixed(2);
+            }
         });
     </script>
 </body>
